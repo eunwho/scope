@@ -117,14 +117,14 @@ function btnReadAll(){
 function btnMonitor(){
 	traceOnOff = 0;
 	document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
-	if( traceOnOff ){
+	if( monitorOnOff ){
 		monitorOnOff = 0 ;
 		document.getElementById('btnMonitor').innerHTML = '모니터시작';
 	}else{
 		monitorOnOff = 1;
 		document.getElementById('btnMonitor').innerHTML = '모니터정지';
 	}
-	socket.emit('monitor',0);
+	socket.emit('monitor',monitorOnOff);
 }
 
 function btnRestart(){
@@ -240,6 +240,16 @@ socket.on('codeList',function(msg){
 	document.getElementById('stopRecord').innerHTML = msg;
 });	
 
+var monitorCount=0;
+
+socket.on('monitor',function(msg){
+	
+	(monitorCount > 99 ) ? monitorCount = 0 : monitorCount++;
+
+	var msgOut = document.getElementById('stopRecord').innerHTML;
+	if((monitorCount %5) == 0 ) msgOut ='';  
+	document.getElementById('stopRecord').innerHTML = msgOut + '#'+ monitorCount + msg;
+});	
+
 </script>
 {% endblock %}
-
