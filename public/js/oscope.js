@@ -664,3 +664,4 @@ setInterval( function () {
 	var time = date.toLocaleTimeString();
   document.getElementById('clock1').innerHTML = n +':'+ time;
 }, 2000);
+

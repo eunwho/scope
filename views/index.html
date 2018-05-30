@@ -34,7 +34,7 @@
 		</div>
 		<div id='bottomBox' class='csBottomBox'> 
 				<button id='btnTraceOnOff' 		class='w3-button w3-round w3-red    w3-large' onclick='btnTraceOnOff()'>측정시작</button>
-				<button id='btnStart' 	class='w3-button w3-round w3-green  w3-large' onclick='btnStart()'>ReadAll</button>
+				<button id='btnReadAll' 	class='w3-button w3-round w3-green  w3-large' onclick='btnReadAll()'>ReadAll</button>
 				<button id='btnMonitor'	class='w3-button w3-round w3-blue   w3-large' onclick='btnMonitor()'>모니터시작</button>
 				<button id='btnRestart' class='w3-button w3-round w3-indigo w3-large' onclick='btnRestart()'>동작버튼4</button>
 				<button id='btnNoVac' 	class='w3-button w3-round w3-green  w3-large' onclick='changeNoVac()'>동작버튼5</button>
@@ -90,14 +90,15 @@
 
 	var msgTx = { selVac: 0};
 	var traceOnOff = 0;
+	var monitorOnOff = 0;
 
   function changeNoVac(){
-		msgTx.selVac = 4;
-		console.log('msgTx.selVac = ', msgTx.selVac);
-		socket.emit('btnClick',{selVac :4});
 	}
 
   function btnTraceOnOff(){
+		monitorOnOff = 0;
+		document.getElementById('btnMonitor').innerHTML = '모니터시작';
+
 		if( traceOnOff ){
 			traceOnOff = 0 ;
 			document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
@@ -109,28 +110,36 @@
 		
 	}
 
-function btnStart(){
+function btnReadAll(){
 	socket.emit('getCodeList',0);
 }
 
 function btnMonitor(){
+	traceOnOff = 0;
+	document.getElementById('btnTraceOnOff').innerHTML = '측정시작';
 	if( traceOnOff ){
 		monitorOnOff = 0 ;
 		document.getElementById('btnMonitor').innerHTML = '모니터시작';
 	}else{
 		monitorOnOff = 1;
-  		document.getElementById('btnMonitor').innerHTML = '모니터정지';
+		document.getElementById('btnMonitor').innerHTML = '모니터정지';
 	}
 	socket.emit('monitor',0);
 }
 
-  function btnRestart(){
-		msgTx.selVac = 3;
-		socket.emit('btnClsik',msgTx);
-	}
+function btnRestart(){
+	msgTx.selVac = 3;
+	socket.emit('btnClsik',msgTx);
+}
 
 function btnReadCode(){
 	
+	var test = document.getElementById('txtCodeEdit').value;
+	console.log(test);
+	//socket.emit('getCodeList',0);
+}
+
+function btnWriteCode(){
 	var test = document.getElementById('txtCodeEdit').value;
 	console.log(test);
 	//socket.emit('getCodeList',0);
@@ -172,16 +181,6 @@ function btnReadCode(){
   $('#hcursor2' ).on('change',null,function() {oscope.onCursorSelect(1);});
   $('#vcursor1' ).on('change',null,function() {oscope.onCursorSelect(2);});
   $('#vcursor2' ).on('change',null,function() {oscope.onCursorSelect(3);});
-
-  // =============================================
-  // run/stop
-  // =============================================
-  $('#btn-run' ).on('change',null,function() {oscope.onRunStop(true );});
-  $('#btn-stop').on('change',null,function() {oscope.onRunStop(false);});
-
-  // =============================================
-  // x axis offset handling
-  // =============================================
 
   function setChannelOffset(channel,element) {
     var offset = parseInt(element.value);
